@@ -114,16 +114,17 @@ public class IdomaarHTTPRecommendationInterceptor implements Interceptor {
 			}
 			String[] token = body.split("\t");
 			String type = token[0];
-			String property = token[3];
-			String entity = token[4];
+//			String property = token[3];
+//			String entity = token[4];
+			
+			String bodyMessage = token[1].substring(0, token[1].lastIndexOf("}")+1);
 			
 			// encode the content as HTTP URL parameters.
 			String urlParameters = "";
 			try {
-				urlParameters = String.format("type=%s&properties=%s&entities=%s",
+				urlParameters = String.format("type=%s&body=%s",
 						URLEncoder.encode(type, "UTF-8"),
-						URLEncoder.encode(property, "UTF-8"),
-						URLEncoder.encode(entity, "UTF-8"));
+						URLEncoder.encode(bodyMessage, "UTF-8"));
 			} catch (UnsupportedEncodingException e1) {
 				System.err.println(e1.toString());
 			}
@@ -153,14 +154,14 @@ public class IdomaarHTTPRecommendationInterceptor implements Interceptor {
 				}
 			}
 			boolean answerExpected = false;
-			if (body.contains("\"event_type\": \"recommendation_request\"")) {
+			if (body.contains("recommendation_request")) {
 				answerExpected = true;
 			}
 			if (answerExpected) {
 				logger.debug("serverResponse: " + response);
 				
 				// extract the most relevant information from the request for preparing the log for the evaluator 
-				String[] data = LogFileUtils.extractEvaluationRelevantDataFromInputLine(body);
+				String[] data = LogFileUtils.extractEvaluationRelevantDataFromInputLine(bodyMessage);
 				String requestId = data[0];
 				String userId = data[1];
 				String itemId = data[2];

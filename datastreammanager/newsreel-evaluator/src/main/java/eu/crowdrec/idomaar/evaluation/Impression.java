@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An impression object. Should contain userID, itemID, domainID, and timeStamp.
@@ -21,6 +23,8 @@ public class Impression {
     // define the final constants
 	///////////////////////////////////////////////////////////////////////////////////////////
 
+	
+	private static final Logger logger = LoggerFactory.getLogger(Impression.class);
 	
 	/** The threadLocal simpleDateFormat - typically parsers are not threadsafe, this we define them as thread-local. */
 	public static final ThreadLocal<SimpleDateFormat> dateFormatter = new ThreadLocal<SimpleDateFormat>(){
@@ -263,10 +267,11 @@ public class Impression {
 		
 		// parse the line
 		String[] token = line.split("\t");
+		String json = token[1].substring(0, token[1].lastIndexOf("}")+1);
 		
 		// if the line contains only one token, handle the line as plan json
 		if (token.length < 4) {
-			return createImpressionFromJSON(line);
+			return createImpressionFromJSON(json);
 		}
 		
 		// extract the relevant information

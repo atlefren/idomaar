@@ -158,7 +158,7 @@ public class StreamingLinkedFileCacheDuplicateSupport {
 			}
 			
 			// ignore comments
-			if (line.startsWith("#")) {
+			if (line.startsWith("#") || line.contains("item_update")) {
 				continue;
 			}
 			
